@@ -127,3 +127,13 @@ plt.xlabel('x',fontsize=16)
 plt.ylabel('y',fontsize=16)
 plt.xlim(xStart,xEnd)
 plt.ylim(yStart,yEnd)
+contf = plt.contourf(X,Y,Cp,levels=np.linspace(-2.0,1.0,100),extend='both')
+cbar = plt.colorbar(contf)
+cbar.set_label(r'$C_p$',fontsize=16)
+cbar.set_ticks([-2.0,-1.0,0.0,1.0])
+plt.scatter([xSource,xSink],[ySource,ySink],c='#CD2305',s=80,marker='o')
+plt.contour(X,Y,psi,\
+    levels=[0.0],\
+    colors='#CD2305',linewidths=2,linestyles='solid')
+    
+plt.show()
