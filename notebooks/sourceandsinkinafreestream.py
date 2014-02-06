@@ -67,7 +67,7 @@ plt.xlabel('x',fontsize=16)
 plt.ylabel('y',fontsize=16)
 plt.xlim(xStart,xEnd)
 plt.ylim(yStart,yEnd)
-plt.streamplot(X,Y,u,v,density=2.0,linewidth=1,arrowsize=1,arrowstyle = '->')
+plt.streamplot(X,Y,u,v,density=2.0,linewidth=1,color='b',arrowsize=1,arrowstyle = '->')
 plt.scatter(xSource,ySource,c='#CD2305',s=80,marker='o')
 
 #computing the stagnation point
@@ -75,7 +75,7 @@ xStagnation= xSource - strengthSource/(2*pi*Uinf)*cos(alpha)
 yStagnation = ySource - strengthSource/(2*pi*Uinf)*sin(alpha)
 
 #adding the stagnation point to the figure
-plt.scatter(xStagnation,yStagnation,c='b',s=80,marker = 'o')
+plt.scatter(xStagnation,yStagnation,c='g',s=80,marker = 'o')
 
 #adding the dividing line to the figure
 if (alpha==0.0):
@@ -86,4 +86,44 @@ if (alpha==0.0):
 ''' if you youse contourf instead of contour it fills the contour level as defined by levels
 it fills in the source portion of the level'''
 
-plt.show()
+
+'''we can use the functions getStreamfunction and getVelocity (defined above) 
+to code for adding the sink without much coding'''
+
+# source-sink pair in a uniform flow
+strengthSink=-5.0               #strength of the sink
+xSink,ySink=1.0,0.0             #location of the sink
+
+# computing the velocity field on the mesh grid
+uSink,vSink=getVelocity(strengthSink,xSink,ySink,X,Y)
+
+# computing the stream-function on the grid mesh
+psiSink=getStreamFunction(strengthSink,xSink,ySink,X,Y)
+
+# superposition of a source and a sink on the freestream
+u = uFreestream + uSource + uSink
+v = vFreestream + vSource + vSink
+psi = psiFreestream + psiSource + psiSink
+
+# plotting source plus sink in a freestream
+size=10
+plt.figure(figsize=(size,(yEnd-yStart)/(xEnd-xStart)*size))
+plt.xlabel('x',fontsize=16)
+plt.ylabel('y',fontsize=16)
+plt.xlim(xStart,xEnd)
+plt.ylim(yStart,yEnd)
+plt.streamplot(X,Y,u,v,density=2.0,linewidth=1,arrowsize=1,arrowstyle='->')
+plt.scatter([xSource,xSink],[ySource,ySink],c='#CD2305',s=80,marker='o')
+if(alpha ==0.0):
+    plt.contour(X,Y,psi,levels=[0.0],colors='#CD2305',linewidth=2,linestyles='solid')
+
+# computing the pressure coefficient
+Cp=1.0-(u**2+v**2)/Uinf**2
+
+# plotting
+size=10
+plt.figure(figsize=(1.1*size,(yEnd-yStart)/(xEnd-xStart)*size))
+plt.xlabel('x',fontsize=16)
+plt.ylabel('y',fontsize=16)
+plt.xlim(xStart,xEnd)
+plt.ylim(yStart,yEnd)
