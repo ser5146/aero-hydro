@@ -16,7 +16,7 @@ X,Y = np.meshgrid(x,y)          # generation of the mesh grid
 #source in a uniform stream
 
 Uinf = 1.0                      # freestream speed
-alphaInDegrees = 0.0            # angle of attack (in degrees)
+alphaInDegrees = 0.0          # angle of attack (in degrees)
 alpha = alphaInDegrees*pi/180
 
 #computing the velocity components on the mesh grid
@@ -53,3 +53,37 @@ uSource,vSource = getVelocity(strengthSource,xSource,ySource,X,Y)
 
 #computing the stream-function
 psiSource= getStreamFunction(strengthSource,xSource,ySource,X,Y)
+
+#superposition of the source on the freestream
+u=uFreestream + uSource
+v=vFreestream + vSource
+psi = psiFreestream + psiSource
+
+#plotting
+size=10
+plt.figure(figsize=(size,(yEnd-yStart)/(xEnd-xStart)*size))
+plt.grid(True)
+plt.xlabel('x',fontsize=16)
+plt.ylabel('y',fontsize=16)
+plt.xlim(xStart,xEnd)
+plt.ylim(yStart,yEnd)
+plt.streamplot(X,Y,u,v,density=2.0,linewidth=1,arrowsize=1,arrowstyle = '->')
+plt.scatter(xSource,ySource,c='#CD2305',s=80,marker='o')
+
+#computing the stagnation point
+xStagnation= xSource - strengthSource/(2*pi*Uinf)*cos(alpha)
+yStagnation = ySource - strengthSource/(2*pi*Uinf)*sin(alpha)
+
+#adding the stagnation point to the figure
+plt.scatter(xStagnation,yStagnation,c='b',s=80,marker = 'o')
+
+#adding the dividing line to the figure
+if (alpha==0.0):
+    plt.contour(X,Y,psi,\
+        levels=[-strengthSource/2,+strengthSource/2],\
+        colors ='#CD2305',linewidth=2,linestyles='solid')
+
+''' if you youse contourf instead of contour it fills the contour level as defined by levels
+it fills in the source portion of the level'''
+
+plt.show()
