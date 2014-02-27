@@ -93,14 +93,8 @@ contf = plt.contourf(X,Y,Cp,levels=np.linspace(-2.0,1.0,100),extend='both')
 cbar = plt.colorbar(contf)
 cbar.set_label(r'$C_p$',fontsize=16)
 cbar.set_ticks([-2.0,-1.0,0.0,1.0])
-plt.scatter(xDoublet,yDoublet,c='#CD2305',s=80,marker='o')
+plt.scatter(xDoublet,yDoublet,c='r',s=80,marker='o')
 plt.contour(X,Y,psi,\
             levels=[0.0],\
-            colors='#CD2305',linewidths=2,linestyles='solid')
+            colors='r',linewidths=2,linestyles='solid')
 plt.scatter([xStagn1,xStagn2],[yStagn1,yStagn2],c='g',s=80,marker='o');
-
-'''from IPython.core.display import HTML
-def css_styling():
-    styles = open('../styles/custom.css', 'r').read()
-    return HTML(styles)
-css_styling()'''
