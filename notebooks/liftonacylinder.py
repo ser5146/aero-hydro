@@ -13,6 +13,7 @@ kappa = 1.0                    # strength of doublet
 xDoublet,yDoublet = 0.0,0.0    # location of doublet
 
 Uinf = 1.0        # freestream speed
+
 #Function Definitions for the doublet
 
 # function to compute the velocity components of a doublet
@@ -44,6 +45,7 @@ u = uFreestream + uDoublet
 v = vFreestream + vDoublet
 psi = psiFreestream + psiDoublet
 
+#plot time!
 # plotting
 size = 10
 plt.figure(figsize=(size,(yEnd-yStart)/(xEnd-xStart)*size))
@@ -55,7 +57,7 @@ plt.streamplot(X,Y,u,v,\
                density=2.0,linewidth=1,arrowsize=1,arrowstyle='->')
 plt.scatter(xDoublet,yDoublet,c='r',s=80,marker='o')
 
-#plot time!
+
 # cylinder radius
 R = sqrt(kappa/(2*pi*Uinf))
 circle = plt.Circle((0,0),radius=R,color='r',alpha=0.5)
@@ -114,3 +116,25 @@ circle = plt.Circle((0,0),radius=R,color='r',alpha=0.5)
 plt.gca().add_patch(circle)
 plt.scatter(xVortex,yVortex,c='r',s=80,marker='o')
 plt.scatter([xStagn1,xStagn2],[yStagn1,yStagn2],c='g',s=80,marker='o');
+
+#let's plot pressure
+theta=np.linspace(0,2*pi,100)
+utheta=-2*Uinf*np.sin(theta)-gamma/(2*pi*R)
+
+#with vortex
+Cp=1-(utheta/Uinf)**2
+
+#no vortex
+utheta_noVortex=-2*Uinf*np.sin(theta)
+Cp_noVortex=1-(utheta_noVortex/Uinf)**2
+
+#plotting
+size=6
+plt.figure(figsize=(size,size))
+plt.grid(True)
+plt.xlabel(r'$\theta$',fontsize=18)
+plt.ylabel(r'$C_p$',fontsize=18)
+plt.xlim(theta.min(),theta.max())
+plt.plot(theta,Cp,color='r',linewidth=2,linestyle='-')
+plt.plot(theta,Cp_noVortex,color='g',linewidth=2,linestyle='-')
+plt.legend(['with vortex','without vortex'],loc='best',prop={'size':16});
