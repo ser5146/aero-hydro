@@ -32,3 +32,32 @@ class Panel:
         self.xa,self.ya = xa,ya                 # 1st end-point
         self.xb,self.yb = ya,yb                 # 2nd end-point
         self.xc,self.yc-(xa+xb)/2,(ya+yb)/2     # control point
+        self.length = sqrt((xb-xa)**2+(yb-ya)**2) # length of the panel
+        
+        # orientation of the panel
+        if (xb-xa<=0.): self.beta = acos((yb-ya)/self.length)
+        elif (xb-xa>0.): self.beta = pi+acos(-(yb-ya)/self.length)
+        
+        # location of the panel
+        if (self.beta<=pi): self.loc = 'extrados'
+        else: self.loc = 'intrados'
+        
+        self.sigma = 0.                         # source strength
+        self.vt =0.                             # tangential velocity
+        self.Cp = 0.                            # pressure coefficient
+        
+# function to discretize the geometry into panels
+def definePanels(N,xp,yp):
+    R = (max(xp)-min(xp))/2
+    xc,yc=(max(xp)+min(xp))/2,(max(yp)+min(yp))/2
+    xCircle = xc+ R*np.cos(np.linspace(0,2*pi,N+1))
+    yCircle = yc+ R*np.sin(np.linspace(0,2*pi,N+1))
+    
+    x=np.copy(xCircle[0:-1])
+    y=np.empty_like(x)
+    
+    I=0
+    for i in range(N):
+        while (I<len(xp)-1):
+            if (xp[I]<=x[i]<=xp[I+1]
+    
