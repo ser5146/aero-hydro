@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 
 #function to read coordinates and store them into two 1D arrays
 # read of the geometry from a data file
-coords = np.loadtxt(fname='../resources/naca0012.dat')
+coords = np.loadtxt(fname='../data/naca0012.dat')
 xp,yp = coords[:,0],coords[:,1]
 
 # plotting the geometry
@@ -156,13 +156,13 @@ def getTangentVelocity(p,fs,gamma):
 	for i in range(N):
 		p[i].vt = vt[i]
 		
-etTangentVelocity(panel,freestream,gamma)	# get tangential velocity
+getTangentVelocity(panel,freestream,gamma)	# get tangential velocity
 # function to calculate the pressure coefficient at each control point
 def getPressureCoefficient(p,fs):
 	for i in range(len(p)):
 		p[i].Cp = 1-(p[i].vt/fs.Uinf)**2
 
-getPressureCoefficient(pannel,freestream) # get pressure coefficient
+getPressureCoefficient(panel,freestream) # get pressure coefficient
 
 # plotting the coefficient of pressure
 valX,valY = 0.1,0.2
