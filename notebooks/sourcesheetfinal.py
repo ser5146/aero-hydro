@@ -93,7 +93,7 @@ plt.xlim(xStart,xEnd)
 plt.ylim(yStart,yEnd)
 
 plt.streamplot( X,Y, u,v, density=2,linewidth=1,arrowsize=1,arrowstyle='->')
-plt.scatter( xSource*np.ones(Nsources,dtype=float), ySource,c='#CD2305',s=80,marker='o')
+plt.scatter( xSource*np.ones(Nsources,dtype=float), ySource,c='r',s=80,marker='o')
 velocity = plt.contourf( X,Y,np.sqrt(u**2+v**2),levels=np.linspace(0.0,0.1,10))
 cbar = plt.colorbar(velocity, ticks=[0, 0.05, 0.1], orientation='horizontal')
 cbar.set_label('Velocity magnitude',fontsize=16);
