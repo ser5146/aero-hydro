@@ -133,3 +133,55 @@ def buildRHS(p,fs):
 	for i in range(N):
 		B[i] = -fs.Uinf*cos(fs.alpha-p[i].beta)
 	return B
+	
+A = buildMatrix(panel)					# calculate the singularity matrix
+B = buildRHS(panel,freestream)			# calculate the freestream RHS
+
+# solve the linear system
+var = np.linalg.solve(A,B)
+for i in range(len(panel)):
+	panel[i].sigma = var[i]
+	
+# function to calculate the tangential velocity at each control point
+def getTangentVelocity(p,fs,gamma):
+	N = len(p)
+	A = np.zeros((N,N),dtype=float)
+	for i in range(N):
+		for j in range(N):
+			if (i!=j):
+				A[i,j] = 0.5/pi*I(p[i].xc,p[i].yc,p[j],-sin(p[i].beta),cos(p[i].beta))
+	B = fs.Uinf*np.sin([fs.alpha-pp.beta for pp in p])
+	var = np.array([pp.sigma for pp in p])
+	vt = np.dot(A,var)+B
+	for i in range(N):
+		p[i].vt = vt[i]
+		
+etTangentVelocity(panel,freestream,gamma)	# get tangential velocity
+# function to calculate the pressure coefficient at each control point
+def getPressureCoefficient(p,fs):
+	for i in range(len(p)):
+		p[i].Cp = 1-(p[i].vt/fs.Uinf)**2
+
+getPressureCoefficient(pannel,freestream) # get pressure coefficient
+
+# plotting the coefficient of pressure
+valX,valY = 0.1,0.2
+xmin,xmax = min([p.xa for p in panel]),max([p.xa for p in panel])
+Cpmin,Cpmax = min([p.Cp for p in panel]),max([p.Cp for p in panel])
+xStart,xEnd = xmin-valX*(xmax-xmin),xmax+valX*(xmax-xmin)
+yStart,yEnd = Cpmin-valY*(Cpmax-Cpmin),Cpmax+valY*(Cpmax-Cpmin)
+plt.figure(figsize=(10,6))
+plt.grid(True)
+plt.xlabel('x',fontsize=16)
+plt.ylabel('$C_p$',fontsize=16)
+plt.plot([p.xc for p in panel if p.loc=='extrados'],\
+		[p.Cp for p in panel if p.loc=='extrados'],\
+		'ro-',linewidth=2)
+plt.plot([p.xc for p in panel if p.loc=='intrados'],\
+		[p.Cp for p in panel if p.loc=='intrados'],\
+		'bo-',linewidth=1)
+plt.legend(['extrados','intrados'],'best',prop={'size':14})
+plt.xlim(xStart,xEnd)
+plt.ylim(yStart,yEnd)
+plt.gca().invert_yaxis()
+plt.title('Number of panels : %d'%len(panel));
