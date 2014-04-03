@@ -60,4 +60,22 @@ def definePanels(N,xp,yp):
     for i in range(N):
         while (I<len(xp)-1):
             if (xp[I]<=x[i]<=xp[I+1]
+            else: I+=1
+        a=(yp[(I+1)%len(yp)]-yp[I])/(xp[I+1)%ln(yp)]-xp[I])
+        b=yp[(I+1)%len(yp)]-a*xp[(I+1_%len(xp)]
+        y[i]=a*x[i]+b
+        
+    panel=np.empty(N,dtype=object)
+    for i in range(N):
+        panel[i]=Panel(x[i],y[i],x[(i+1)%N],y[(i+1)%N])
+    return panel
     
+    N=20                            #number of panels
+    panel = definePnels(N,xp,yp)    #discretization of the geometry into panels
+    
+    # plotting the geometry with the panels
+    valX,valY = 0.1,0.2
+    xmin,xmax = min([p.xa for p in panel]),max([p.xa for p in panel])
+    ymin,ymax = min([p.ya for p in panel]),max([p.ya for p in panel])
+    xStart,xEnd = xmin-valX*(xmax-xmin),xmax+valX*(xmax-xmin)
+    yStart,yEnd
