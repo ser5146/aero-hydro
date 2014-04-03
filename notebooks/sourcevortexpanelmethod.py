@@ -90,4 +90,16 @@ plt.plot(np.append([p.xa for p in panel],panel[0].xa),\
         np.append([p.ya for p in panel],panel[0].ya),\
             linestyle='-',linewidth=1,\
             marker='o',markersize=6,color='r');
+# class Freestream (contains all of the freestream conditions)
+class Freestream:
+    def __init__(self,Uinf,alpha):
+        self.Uinf = Uinf        #velocity magnitude
+        self.alpha = alpha*pi/180  # angle of attack (degrees convert to radians)
+
+# definition of the object freestream
+Uinf = 1.0              #freestream speed
+alpha = 5.0             # angle of attack in degrees
+freestream = Freestream(Uinf,alpha)     #instance of the object freestream
+
+
 
