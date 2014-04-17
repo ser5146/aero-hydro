@@ -107,18 +107,18 @@ def I(xci,yci,pj,dxdz,dydz):
         return (+(xci-(pj.xa-sin(pj.beta)*s))*dxdz+(yci\
         -(pj.ya+cos(pj.beta)*s))*dydz)\
         /((xci-(pj.xa-sin(pj.beta)*s))**2\
-        +(yci-(pj.ya+cos(j.beta)*s))**2)
-    return integrate.quad(lambda s:func(s),0,bpj.length)[0]
+        +(yci-(pj.ya+cos(pj.beta)*s))**2)
+    return integrate.quad(lambda s:func(s),0,pj.length)[0]
     
 # function to build source matrix
 def sourceMatrix(p):
     N=len(p)
-    A=np.empy((N,N),dytpe=float)
+    A=np.empty((N,N),dtype=float)
     np.fill_diagonal(A,0.5)
     for i in range(N):
         for j in range(N):
             if (i!=j): #not equal
-                A[i,j]=0.5/pi*I(p[i].xc,p[i].yx,p[j],+cos(p[i].beta),+sin(p[i].beta))
+               A[i,j] = 0.5/pi*I(p[i].xc,p[i].yc,p[j],+cos(p[i].beta),+sin(p[i].beta))
     return A
 
 # function to build the vortex array
@@ -173,3 +173,23 @@ for i in range(len(panel)):
 	panel[i].sigma = var[i]
 gamma = var[-1]
 
+#function to calculate tengential velocity at the control points
+def getTangentVelocity(p,fs,gamma):
+	N = len(p)
+	A = np.zeros((N,N+1),dtype=float)
+	for i in range(N):
+		for j in range(N):
+			if (i!=j):
+				A[i,j] = 0.5/pi*I(p[i].xc,p[i].yc,p[j],-sin(p[i].beta),+cos(p[i].beta))
+				A[i,N] -= 0.5/pi*I(p[i].xc,p[i].yc,p[j],+cos(p[i].beta),+sin(p[i].beta))
+	B = fs.Uinf*np.sin([fs.alpha-pp.beta for pp in p])
+	var = np.empty(N+1,dtype=float)
+	var = np.append([pp.sigma for pp in p],gamma)
+	vt = np.dot(A,var)+B
+	for i in range(N):
+		p[i].vt = vt[i]
+# get tangential velocity
+getTangentVelocity(panel,freestream,gamma)
+def getPressureCoefficient(p,fs): #function to calc pressure coeff at control points
+    for i in range(len(p)):
+        p[i].Cp=1-(p[i].vt/fs.Uinf)**2
