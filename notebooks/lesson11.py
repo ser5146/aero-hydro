@@ -282,4 +282,4 @@ plt.xlim(xStart,xEnd)
 plt.ylim(yStart,yEnd)
 plt.title('Pressure Field')
 
-
+plt.show()
