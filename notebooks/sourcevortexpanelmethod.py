@@ -101,5 +101,33 @@ Uinf = 1.0              #freestream speed
 alpha = 5.0             # angle of attack in degrees
 freestream = Freestream(Uinf,alpha)     #instance of the object freestream
 
+#function to evaluate the integral 
+def I(xci,yci,pj,dxdz,dydz):
+    def func(s):
+        return (+(xci-(pj.xa-sin(pj.beta)*s))*dxdz+(yci\
+        -(pj.ya+cos(pj.beta)*s))*dydz)\
+        /((xci-(pj.xa-sin(pj.beta)*s))**2\
+        +(yci-(pj.ya+cos(j.beta)*s))**2)
+    return integrate.quad(lambda s:func(s),0,bpj.length)[0]
+    
+# function to build source matrix
+def sourceMatrix(p):
+    N=len(p)
+    A=np.empy((N,N),dytpe=float)
+    np.fill_diagonal(A,0.5)
+    for i in range(N):
+        for j in range(N):
+            if (i!=j): #not equal
+                A[i,j]=0.5/pi*I(p[i].xc,p[i].yx,p[j],+cos(p[i].beta),+sin(p[i].beta))
+    return A
 
+# function to build the vortex array
+def vortexArray(p):
+    N=len(p)
+    B=np.zeros(N,dtype=float)
+    for i in range(N):
+        for j in range(N):
+            if (j!=i):
+                B[i]-=0.5/pi*I(p[i].xc,p[i].yc,p[j],+sin(p[i].beta),-cos(p[i].beta))
+    return B
 
