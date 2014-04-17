@@ -48,26 +48,30 @@ class Panel:
         
 # function to discretize the geometry into panels
 def definePanels(N,xp,yp):
-    R = (max(xp)-min(xp))/2
-    xc,yc=(max(xp)+min(xp))/2,(max(yp)+min(yp))/2
-    xCircle = xc+ R*np.cos(np.linspace(0,2*pi,N+1))
-    yCircle = yc+ R*np.sin(np.linspace(0,2*pi,N+1))
     
-    x=np.copy(xCircle[0:-1])
-    y=np.empty_like(x)
+    R = (max(xp)-min(xp))/2                           #radius of the circle
+    xCenter = (max(xp)+min(xp))/2                       #x-coord of the center
+    xCircle = xCenter + R*np.cos(np.linspace(0,2*pi,N+1))  #x-coord of the circle points
     
-    I=0
+    x = np.copy(xCircle) #projection of the x-coord on the surface
+    y = np.empty_like(x) #initialization of the y-coord Numpy array
+
+    xp,yp = np.append(xp,xp[0]),np.append(yp,yp[0])    #extend arrays using np.append
+    
+    I = 0
     for i in range(N):
         while (I<len(xp)-1):
-            if (xp[I]<=x[i]<=xp[I+1] or xp[I+1]<=x[i]<=xp[I]):break
+            if (xp[I]<=x[i]<=xp[I+1] or xp[I+1]<=x[i]<=xp[I]): break
             else: I += 1
-        a=(yp[(I+1)%len(yp)]-yp[I])/(xp[(I+1)%len(yp)]-xp[I])
-        b=yp[(I+1)%len(yp)]-a*xp[(I+1)%len(xp)]
-        y[i]=a*x[i]+b
-        
-    panel=np.empty(N,dtype=object)
+        a = (yp[I+1]-yp[I])/(xp[I+1]-xp[I])
+        b = yp[I+1]-a*xp[I+1]
+        y[i] = a*x[i]+b
+    y[N] = y[0]
+    
+    panel = np.empty(N,dtype=object)
     for i in range(N):
-        panel[i]=Panel(x[i],y[i],x[(i+1)%N],y[(i+1)%N])
+        panel[i] = Panel(x[i],y[i],x[i+1],y[i+1])
+    
     return panel
     
 N=20                            #number of panels
