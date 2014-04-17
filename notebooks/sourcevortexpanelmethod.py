@@ -193,3 +193,36 @@ getTangentVelocity(panel,freestream,gamma)
 def getPressureCoefficient(p,fs): #function to calc pressure coeff at control points
     for i in range(len(p)):
         p[i].Cp=1-(p[i].vt/fs.Uinf)**2
+        
+# get pressure coefficient
+getPressureCoefficient(panel,freestream)
+
+# plotting the coefficient of pressure
+valX,valY = 0.1,0.2
+xmin,xmax = min([p.xa for p in panel]),max([p.xa for p in panel])
+Cpmin,Cpmax = min([p.Cp for p in panel]),max([p.Cp for p in panel])
+xStart,xEnd = xmin-valX*(xmax-xmin),xmax+valX*(xmax-xmin)
+yStart,yEnd = Cpmin-valY*(Cpmax-Cpmin),Cpmax+valY*(Cpmax-Cpmin)
+plt.figure(figsize=(10,6))
+plt.grid(True)
+plt.xlabel('X',fontsize=16)
+plt.ylabel('$C_p$',fontsize=16)
+plt.plot([p.xc for p in panel if p.loc=='extrados'],\
+		[p.Cp for p in panel if p.loc=='extrados'],\
+		'go-',linewidth=2)
+plt.plot([p.xc for p in panel if p.loc=='intrados'],\
+		[p.Cp for p in panel if p.loc=='intrados'],\
+		'bo-',linewidth=1)
+plt.legend(['extrados','intrados'],'best',prop={'size':14})
+plt.xlim(xStart,xEnd)
+plt.ylim(yStart,yEnd)
+plt.gca().invert_yaxis()
+plt.title('Number of panels : %d'%len(panel));
+
+#accuracy check
+#sum all source and sink strengths
+print '-> sum of source and sink strengths:',sum([p.sigma*p.length for p in panel])
+
+#calculate the lift
+Cl = gamma*sum([p.length for p in panel])/(0.5*freestream.Uinf*(xmax-xmin))
+print '-> Lift coefficient: Cl =',Cl
