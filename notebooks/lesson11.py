@@ -74,7 +74,7 @@ def definePanels(N,xp,yp):
     
     return panel
     
-N=20                            #number of panels
+N=40                          #number of panels
 panel = definePanels(N,xp,yp)    #discretization of the geometry into panels
     
     # plotting the geometry with the panels
@@ -102,7 +102,7 @@ class Freestream:
 
 # definition of the object freestream
 Uinf = 1.0              #freestream speed
-alpha = 1.0             # angle of attack in degrees
+alpha = 4.0             # angle of attack in degrees
 freestream = Freestream(Uinf,alpha)     #instance of the object freestream
 
 #function to evaluate the integral 
@@ -239,12 +239,12 @@ def getVelocityField(panel,freestream,gamma,X,Y):
     for i in range(Nx):
         for j in range(Ny):
             u[i,j] = freestream.Uinf*cos(freestream.alpha)\
-              +0.5/pi*sum([p.sigma*I(X[i,j],Y[i,j],p,1,0)for p in panel])
+              +0.5/pi*sum([p.sigma*I(X[i,j],Y[i,j],p,1,0)for p in panel])-0.5*gamma/pi*sum([I(X[i,j],Y[i,j],p,0,-1) for p in panel])
             v[i,j] = freestream.Uinf*sin(freestream.alpha)\
-              +0.5/pi*sum([p.sigma*I(X[i,j],Y[i,j],p,0,1)for p in panel])
+              +0.5/pi*sum([p.sigma*I(X[i,j],Y[i,j],p,0,1)for p in panel])-0.5*gamma/pi*sum([I(X[i,j],Y[i,j],p,1,0) for p in panel])
     return u,v
 # definition of the mesh grid
-Nx,Ny = 20,20
+Nx,Ny = 50,50
 valX,valY = 1.0,2.0
 xmin,xmax = min([p.xa for p in panel]),max([p.xa for p in panel])
 ymin,ymax=min([p.ya for p in panel]),max([p.ya for p in panel])
